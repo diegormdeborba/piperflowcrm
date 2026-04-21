@@ -225,13 +225,13 @@ export function OnboardingForm() {
   const [step, setStep] = useState<Step>("choice")
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b border-slate-100 px-6 py-4">
+    <div className="light min-h-screen flex flex-col bg-background">
+      <header className="border-b border-border px-6 py-4">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <BarChart3 className="w-4 h-4 text-white" />
           </div>
-          <span className="text-lg font-bold text-slate-900">PipeFlow</span>
+          <span className="text-lg font-bold text-foreground">PipeFlow</span>
         </div>
       </header>
 

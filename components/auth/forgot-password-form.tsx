@@ -66,12 +66,12 @@ export function ForgotPasswordForm() {
           >
             Tentar outro e-mail
           </Button>
-          <Link href="/login">
-            <Button variant="ghost" className="w-full">
+          <Button asChild variant="ghost" className="w-full">
+            <Link href="/login">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Voltar para o login
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
     )
@@ -114,12 +114,12 @@ export function ForgotPasswordForm() {
         </form>
       </Form>
 
-      <Link href="/login">
-        <Button variant="ghost" className="w-full text-slate-600">
+      <Button asChild variant="ghost" className="w-full text-slate-600">
+        <Link href="/login">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar para o login
-        </Button>
-      </Link>
+        </Link>
+      </Button>
     </div>
   )
 }

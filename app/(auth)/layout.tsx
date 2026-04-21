@@ -54,13 +54,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="absolute -top-32 -right-32 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="flex flex-col justify-center items-center p-6 sm:p-12 bg-white">
+      <div className="light flex flex-col justify-center items-center p-6 sm:p-12 bg-background">
         <div className="w-full max-w-md">
           <div className="flex items-center gap-2 mb-8 lg:hidden">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <BarChart3 className="w-4 h-4 text-white" />
             </div>
-            <span className="text-lg font-bold text-slate-900">PipeFlow</span>
+            <span className="text-lg font-bold text-foreground">PipeFlow</span>
           </div>
           {children}
         </div>

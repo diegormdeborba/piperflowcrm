@@ -64,9 +64,9 @@ export function ResetPasswordForm() {
             Redirecionando para o login...
           </p>
         </div>
-        <Link href="/login">
-          <Button className="w-full">Ir para o login</Button>
-        </Link>
+        <Button asChild className="w-full">
+          <Link href="/login">Ir para o login</Link>
+        </Button>
       </div>
     )
   }
