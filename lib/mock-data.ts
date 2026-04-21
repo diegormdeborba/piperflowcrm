@@ -1,4 +1,4 @@
-import type { WorkspacePlan, Lead, Activity } from "@/types"
+import type { WorkspacePlan, Lead, Activity, Deal } from "@/types"
 
 export const MOCK_USER = {
   id: "u1",
@@ -35,6 +35,29 @@ export const MOCK_LEADS: Lead[] = [
   { id: "l13", workspace_id: "w1", name: "Vanessa Correia",     email: "vanessa@clinica.med.br", phone: "(11) 97654-8765", company: "Clínica VitaS", role: "Diretora",    status: "new",       owner_id: "u1", created_at: "2026-04-09T10:00:00Z" },
   { id: "l14", workspace_id: "w1", name: "Gabriel Lopes",       email: "gabriel@startup.io",     phone: "(21) 99000-1111", company: "StartupIO",    role: "Product Lead", status: "contacted", owner_id: "u1", created_at: "2026-04-08T16:30:00Z" },
   { id: "l15", workspace_id: "w1", name: "Isabela Nascimento",  email: "isa@financeira.com",     phone: "(11) 98123-4567", company: "Financeira XP", role: "Analista",    status: "lost",      owner_id: "u1", created_at: "2026-04-07T11:00:00Z" },
+]
+
+export const MOCK_DEALS: Deal[] = [
+  { id: "d1",  workspace_id: "w1", lead_id: "l5",  title: "Implementação CRM",       value: 8500,  stage: "new_lead",      owner_id: "u1", due_date: "2026-05-15", created_at: "2026-04-21T09:00:00Z" },
+  { id: "d2",  workspace_id: "w1", lead_id: "l8",  title: "Consultoria em Vendas",   value: 3200,  stage: "new_lead",      owner_id: "u1", due_date: "2026-05-20", created_at: "2026-04-20T10:00:00Z" },
+  { id: "d3",  workspace_id: "w1", lead_id: "l10", title: "Software de Gestão",      value: 15000, stage: "new_lead",      owner_id: "u1", due_date: "2026-05-30", created_at: "2026-04-19T11:00:00Z" },
+  { id: "d4",  workspace_id: "w1", lead_id: "l13", title: "Treinamento de Equipe",   value: 4500,  stage: "new_lead",      owner_id: "u1", due_date: null,         created_at: "2026-04-18T14:00:00Z" },
+  { id: "d5",  workspace_id: "w1", lead_id: "l2",  title: "Plano Pro Anual",         value: 5880,  stage: "contacted",     owner_id: "u1", due_date: "2026-05-10", created_at: "2026-04-17T09:00:00Z" },
+  { id: "d6",  workspace_id: "w1", lead_id: "l7",  title: "Integração via API",      value: 12000, stage: "contacted",     owner_id: "u1", due_date: "2026-05-08", created_at: "2026-04-16T13:00:00Z" },
+  { id: "d7",  workspace_id: "w1", lead_id: "l14", title: "Licença Enterprise",       value: 28000, stage: "contacted",     owner_id: "u1", due_date: "2026-05-25", created_at: "2026-04-15T10:00:00Z" },
+  { id: "d8",  workspace_id: "w1", lead_id: "l12", title: "Suporte Premium",          value: 2400,  stage: "contacted",     owner_id: "u1", due_date: null,         created_at: "2026-04-14T15:00:00Z" },
+  { id: "d9",  workspace_id: "w1", lead_id: "l1",  title: "Expansão de Plano",        value: 9800,  stage: "proposal_sent", owner_id: "u1", due_date: "2026-04-30", created_at: "2026-04-13T09:00:00Z" },
+  { id: "d10", workspace_id: "w1", lead_id: "l6",  title: "CRM Personalizado",        value: 35000, stage: "proposal_sent", owner_id: "u1", due_date: "2026-05-05", created_at: "2026-04-12T11:00:00Z" },
+  { id: "d11", workspace_id: "w1", lead_id: "l3",  title: "Automação de Vendas",      value: 18500, stage: "proposal_sent", owner_id: "u1", due_date: "2026-05-12", created_at: "2026-04-11T14:00:00Z" },
+  { id: "d12", workspace_id: "w1", lead_id: "l11", title: "Pacote Starter",            value: 1200,  stage: "proposal_sent", owner_id: "u1", due_date: "2026-04-28", created_at: "2026-04-10T10:00:00Z" },
+  { id: "d13", workspace_id: "w1", lead_id: "l6",  title: "Contrato Anual Pro",        value: 49000, stage: "negotiation",   owner_id: "u1", due_date: "2026-04-25", created_at: "2026-04-09T09:00:00Z" },
+  { id: "d14", workspace_id: "w1", lead_id: "l1",  title: "Pipeline Customizado",      value: 22000, stage: "negotiation",   owner_id: "u1", due_date: "2026-04-27", created_at: "2026-04-08T13:00:00Z" },
+  { id: "d15", workspace_id: "w1", lead_id: null,  title: "Dashboard Analytics",       value: 8000,  stage: "negotiation",   owner_id: "u1", due_date: "2026-05-01", created_at: "2026-04-07T11:00:00Z" },
+  { id: "d16", workspace_id: "w1", lead_id: "l2",  title: "Plano Pro 12 Meses",        value: 5880,  stage: "won",           owner_id: "u1", due_date: "2026-04-10", created_at: "2026-04-06T09:00:00Z" },
+  { id: "d17", workspace_id: "w1", lead_id: "l7",  title: "Setup e Onboarding",        value: 3500,  stage: "won",           owner_id: "u1", due_date: "2026-04-05", created_at: "2026-04-05T10:00:00Z" },
+  { id: "d18", workspace_id: "w1", lead_id: "l11", title: "Treinamento Premium",        value: 6000,  stage: "won",           owner_id: "u1", due_date: "2026-04-15", created_at: "2026-04-04T14:00:00Z" },
+  { id: "d19", workspace_id: "w1", lead_id: "l4",  title: "CRM Básico",                value: 2400,  stage: "lost",          owner_id: "u1", due_date: "2026-04-01", created_at: "2026-04-03T09:00:00Z" },
+  { id: "d20", workspace_id: "w1", lead_id: "l15", title: "Migração de Dados",          value: 7500,  stage: "lost",          owner_id: "u1", due_date: "2026-04-03", created_at: "2026-04-02T11:00:00Z" },
 ]
 
 export const MOCK_ACTIVITIES: Activity[] = [
