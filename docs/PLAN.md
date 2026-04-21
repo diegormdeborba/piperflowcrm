@@ -4,44 +4,44 @@
 
 ---
 
-## Milestone 0 — Setup & Fundação
+## Milestone 0 — Setup & Fundação ✅
 
 **Branch:** `main` (setup inicial)  
 **Objetivo:** Repositório, tooling e estrutura base configurados e rodando localmente.
 
 ### Entregas
-- [ ] Criar projeto Next.js 14 com App Router + TypeScript
-- [ ] Configurar Tailwind CSS + shadcn/ui (tema, tokens, componentes base)
-- [ ] Configurar ESLint + Prettier + paths absolutos (`@/`)
-- [ ] Criar estrutura de pastas (`app/`, `components/`, `lib/`, `types/`, `docs/`)
-- [ ] Criar `CLAUDE.md` com contexto do projeto
-- [ ] Criar `docs/PRD.md` com o PRD completo
-- [ ] Criar `.env.example` com todas as variáveis necessárias
-- [ ] Configurar repositório Git + GitHub
-- [ ] Primeiro deploy funcional na Vercel (página em branco)
+- [x] Criar projeto Next.js 14 com App Router + TypeScript
+- [x] Configurar Tailwind CSS + shadcn/ui (tema, tokens, componentes base)
+- [x] Configurar ESLint + Prettier + paths absolutos (`@/`)
+- [x] Criar estrutura de pastas (`app/`, `components/`, `lib/`, `types/`, `docs/`)
+- [x] Criar `CLAUDE.md` com contexto do projeto
+- [x] Criar `docs/PRD.md` com o PRD completo
+- [x] Criar `.env.example` com todas as variáveis necessárias
+- [x] Configurar repositório Git + GitHub
+- [x] Primeiro deploy funcional na Vercel (página em branco)
 
 **Commit final:** `feat: project setup — Next.js 14, Tailwind, shadcn/ui, Vercel deploy`
 
 ---
 
-## Milestone 1 — Landing Page
+## Milestone 1 — Landing Page ✅
 
 **Branch:** `feat/landing-page`  
 **Objetivo:** Página pública de apresentação do PipeFlow CRM, responsiva e com boa UX.
 
 ### Entregas
-- [ ] Layout público com Header e Footer
-- [ ] Seção Hero — headline, subtítulo, CTA (Começar grátis / Ver demo)
-- [ ] Seção Funcionalidades — 6 cards com ícones e descrições
-- [ ] Seção Pipeline — screenshot/mockup do Kanban
-- [ ] Seção Planos — tabela Free vs Pro com features e CTA
-- [ ] Seção Depoimentos (placeholder)
-- [ ] Seção CTA final — formulário de e-mail ou botão de cadastro
-- [ ] Página responsiva (mobile-first)
-- [ ] Animações de entrada suaves (Tailwind transitions)
-- [ ] Metatags SEO básicas (title, description, og:image)
+- [x] Layout público com Header e Footer
+- [x] Seção Hero — headline, subtítulo, CTA (Começar grátis / Ver demo)
+- [x] Seção Funcionalidades — 6 cards com ícones e descrições
+- [x] Seção Pipeline — screenshot/mockup do Kanban
+- [x] Seção Planos — tabela Free vs Pro com features e CTA
+- [x] Seção Depoimentos (placeholder)
+- [x] Seção CTA final — formulário de e-mail ou botão de cadastro
+- [x] Página responsiva (mobile-first)
+- [x] Animações de entrada suaves (Tailwind transitions)
+- [x] Metatags SEO básicas (title, description, og:image)
 
-**Commit final:** `feat: landing page — hero, features, pricing, CTA sections`
+**Commit final:** `feat: landing page — hero, features, pipeline preview, pricing, CTA sections`
 
 ---
 
