@@ -42,7 +42,7 @@ export function Header() {
       </header>
 
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="p-0 w-72">
+        <SheetContent side="left" className="p-0 w-72 [&>button]:text-sidebar-foreground [&>button]:opacity-80">
           <Sidebar onLinkClick={() => setMobileOpen(false)} />
         </SheetContent>
       </Sheet>
