@@ -19,6 +19,7 @@ export default function PipelinePage() {
   const [ownerFilter, setOwnerFilter] = useState("all")
   const [sheetOpen, setSheetOpen] = useState(false)
   const [editingDeal, setEditingDeal] = useState<Deal | null>(null)
+  const [defaultStage, setDefaultStage] = useState<DealStage>("new_lead")
   const [deleteTarget, setDeleteTarget] = useState<Deal | null>(null)
 
   const filtered = useMemo(
@@ -38,6 +39,13 @@ export default function PipelinePage() {
 
   function handleNewDeal() {
     setEditingDeal(null)
+    setDefaultStage("new_lead")
+    setSheetOpen(true)
+  }
+
+  function handleAddDeal(stage: DealStage) {
+    setEditingDeal(null)
+    setDefaultStage(stage)
     setSheetOpen(true)
   }
 
@@ -100,12 +108,14 @@ export default function PipelinePage() {
         ownerFallback={MOCK_USER.avatarFallback}
         onMove={handleMove}
         onCardClick={handleCardClick}
+        onAddDeal={handleAddDeal}
       />
 
       <DealSheet
         open={sheetOpen}
         deal={editingDeal}
         leads={MOCK_LEADS}
+        defaultStage={defaultStage}
         onOpenChange={(open) => {
           setSheetOpen(open)
           if (!open) setEditingDeal(null)
