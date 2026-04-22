@@ -11,14 +11,10 @@ import {
 interface DealFiltersProps {
   ownerFilter: string
   onOwnerFilterChange: (value: string) => void
+  owners: { id: string; name: string }[]
 }
 
-const OWNERS = [
-  { id: "all", label: "Todos os responsáveis" },
-  { id: "u1",  label: "João Silva" },
-]
-
-export function DealFilters({ ownerFilter, onOwnerFilterChange }: DealFiltersProps) {
+export function DealFilters({ ownerFilter, onOwnerFilterChange, owners }: DealFiltersProps) {
   return (
     <div className="flex items-center gap-3">
       <Select value={ownerFilter} onValueChange={onOwnerFilterChange}>
@@ -26,8 +22,9 @@ export function DealFilters({ ownerFilter, onOwnerFilterChange }: DealFiltersPro
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {OWNERS.map((o) => (
-            <SelectItem key={o.id} value={o.id}>{o.label}</SelectItem>
+          <SelectItem value="all">Todos os responsáveis</SelectItem>
+          {owners.map((o) => (
+            <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>
           ))}
         </SelectContent>
       </Select>

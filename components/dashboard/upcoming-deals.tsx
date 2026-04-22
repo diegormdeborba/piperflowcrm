@@ -8,7 +8,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn, formatCurrency, formatDate } from "@/lib/utils"
-import type { Deal, Lead } from "@/types"
 
 const STAGE_LABELS: Record<string, string> = {
   new_lead:      "Novo Lead",
@@ -28,17 +27,20 @@ const STAGE_COLORS: Record<string, string> = {
   lost:          "text-red-600 bg-red-50",
 }
 
-interface UpcomingDealsProps {
-  deals: Deal[]
-  leads: Lead[]
+interface UpcomingDeal {
+  id: string
+  title: string
+  value: number | null
+  stage: string
+  due_date: string | null
+  leadName: string | null
 }
 
-export function UpcomingDeals({ deals, leads }: UpcomingDealsProps) {
-  function leadName(leadId: string | null) {
-    if (!leadId) return "—"
-    return leads.find((l) => l.id === leadId)?.name ?? "—"
-  }
+interface UpcomingDealsProps {
+  deals: UpcomingDeal[]
+}
 
+export function UpcomingDeals({ deals }: UpcomingDealsProps) {
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -64,7 +66,7 @@ export function UpcomingDeals({ deals, leads }: UpcomingDealsProps) {
               {deals.map((deal) => (
                 <TableRow key={deal.id}>
                   <TableCell className="font-medium">{deal.title}</TableCell>
-                  <TableCell className="text-muted-foreground">{leadName(deal.lead_id)}</TableCell>
+                  <TableCell className="text-muted-foreground">{deal.leadName ?? "—"}</TableCell>
                   <TableCell>
                     {deal.value != null ? formatCurrency(deal.value) : "—"}
                   </TableCell>

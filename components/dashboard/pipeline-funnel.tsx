@@ -2,7 +2,6 @@
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { Deal } from "@/types"
 
 const STAGE_COLORS: Record<string, string> = {
   new_lead:      "#3b82f6",
@@ -19,14 +18,14 @@ const STAGE_LABELS: Record<string, string> = {
 }
 
 interface PipelineFunnelProps {
-  deals: Deal[]
+  data: { stage: string; count: number }[]
 }
 
-export function PipelineFunnel({ deals }: PipelineFunnelProps) {
-  const data = (["new_lead", "contacted", "proposal_sent", "negotiation"] as const).map((stage) => ({
-    stage,
-    label: STAGE_LABELS[stage],
-    count: deals.filter((d) => d.stage === stage).length,
+export function PipelineFunnel({ data }: PipelineFunnelProps) {
+  const chartData = data.map((d) => ({
+    stage: d.stage,
+    label: STAGE_LABELS[d.stage] ?? d.stage,
+    count: d.count,
   }))
 
   return (
@@ -36,7 +35,7 @@ export function PipelineFunnel({ deals }: PipelineFunnelProps) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={data} layout="vertical" margin={{ left: 0, right: 16, top: 4, bottom: 4 }}>
+          <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 16, top: 4, bottom: 4 }}>
             <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
             <YAxis
               type="category"
@@ -44,12 +43,10 @@ export function PipelineFunnel({ deals }: PipelineFunnelProps) {
               width={140}
               tick={{ fontSize: 12 }}
             />
-            <Tooltip
-              formatter={(value) => [value, "Negócios"]}
-            />
+            <Tooltip formatter={(value) => [value, "Negócios"]} />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
-              {data.map((entry) => (
-                <Cell key={entry.stage} fill={STAGE_COLORS[entry.stage]} />
+              {chartData.map((entry) => (
+                <Cell key={entry.stage} fill={STAGE_COLORS[entry.stage] ?? "#94a3b8"} />
               ))}
             </Bar>
           </BarChart>

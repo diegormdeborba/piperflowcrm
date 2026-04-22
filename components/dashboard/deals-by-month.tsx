@@ -2,29 +2,12 @@
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { Deal } from "@/types"
-
-const PT_MONTHS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
 
 interface DealsByMonthProps {
-  deals: Deal[]
+  data: { label: string; count: number }[]
 }
 
-export function DealsByMonth({ deals }: DealsByMonthProps) {
-  const now = new Date("2026-04-21")
-
-  const data = Array.from({ length: 6 }, (_, i) => {
-    const d = new Date(now)
-    d.setMonth(d.getMonth() - (5 - i))
-    const year = d.getFullYear()
-    const month = d.getMonth()
-    const count = deals.filter((deal) => {
-      const created = new Date(deal.created_at)
-      return created.getFullYear() === year && created.getMonth() === month
-    }).length
-    return { label: PT_MONTHS[month], count }
-  })
-
+export function DealsByMonth({ data }: DealsByMonthProps) {
   return (
     <Card>
       <CardHeader className="pb-2">

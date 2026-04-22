@@ -17,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { createClient } from "@/lib/supabase/client"
 
 const schema = z.object({
   email: z.string().email("E-mail inválido"),
@@ -36,7 +37,11 @@ export function ForgotPasswordForm() {
   const { isSubmitting } = form.formState
 
   async function onSubmit(data: FormData) {
-    await new Promise((r) => setTimeout(r, 1000))
+    const supabase = createClient()
+    await supabase.auth.resetPasswordForEmail(data.email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/reset-password`,
+    })
+    // Always show success to avoid email enumeration
     setSentEmail(data.email)
     setSent(true)
   }

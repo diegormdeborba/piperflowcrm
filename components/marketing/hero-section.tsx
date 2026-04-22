@@ -119,6 +119,21 @@ export function HeroSection() {
             {/* Glow */}
             <div className="pointer-events-none absolute -bottom-6 left-1/2 h-32 w-3/4 -translate-x-1/2 rounded-full bg-blue-500/20 blur-2xl" />
           </div>
+
+          {/* Stats */}
+          <div className="mt-20 grid grid-cols-2 gap-8 sm:grid-cols-4">
+            {[
+              { value: "+47%", label: "taxa de conversão" },
+              { value: "3.2x", label: "leads qualificados" },
+              { value: "-62%", label: "ciclo de venda" },
+              { value: "1.200+", label: "times ativos" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-3xl font-bold text-white">{stat.value}</p>
+                <p className="mt-1 text-sm text-slate-400">{stat.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

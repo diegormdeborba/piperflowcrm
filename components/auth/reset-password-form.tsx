@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { createClient } from "@/lib/supabase/client"
 
 const schema = z
   .object({
@@ -34,6 +35,7 @@ type FormData = z.infer<typeof schema>
 export function ResetPasswordForm() {
   const router = useRouter()
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -42,8 +44,18 @@ export function ResetPasswordForm() {
 
   const { isSubmitting } = form.formState
 
-  async function onSubmit() {
-    await new Promise((r) => setTimeout(r, 1000))
+  async function onSubmit(data: FormData) {
+    setError(null)
+    const supabase = createClient()
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: data.password,
+    })
+
+    if (updateError) {
+      setError("Não foi possível redefinir a senha. Solicite um novo link.")
+      return
+    }
+
     setSuccess(true)
     setTimeout(() => router.push("/login"), 3000)
   }
@@ -119,6 +131,12 @@ export function ResetPasswordForm() {
               </FormItem>
             )}
           />
+
+          {error && (
+            <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-md border border-red-200">
+              {error}
+            </p>
+          )}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
