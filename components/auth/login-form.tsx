@@ -43,6 +43,7 @@ export function LoginForm() {
     setError(null)
     await new Promise((r) => setTimeout(r, 1000))
 
+    // Mock: simula credencial inválida. Removido no Milestone 8 (Supabase Auth).
     if (data.email === "erro@teste.com") {
       setError("E-mail ou senha incorretos. Tente novamente.")
       return

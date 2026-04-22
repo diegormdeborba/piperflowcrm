@@ -23,8 +23,10 @@ export default function DashboardPage() {
       ? Math.round((wonDeals / (wonDeals + lostDeals)) * 100)
       : 0
 
-  const today = new Date("2026-04-21")
-  const in7Days = new Date("2026-04-28")
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const in7Days = new Date(today)
+  in7Days.setDate(today.getDate() + 7)
   const upcomingDeals = MOCK_DEALS.filter(
     (d) =>
       d.due_date &&
@@ -32,7 +34,7 @@ export default function DashboardPage() {
       new Date(d.due_date) <= in7Days,
   ).sort((a, b) => new Date(a.due_date!).getTime() - new Date(b.due_date!).getTime())
 
-  const hour = new Date("2026-04-21T10:00:00").getHours()
+  const hour = new Date().getHours()
   const greeting =
     hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite"
 

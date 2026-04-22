@@ -58,6 +58,7 @@ export function RegisterForm() {
     setError(null)
     await new Promise((r) => setTimeout(r, 1200))
 
+    // Mock: simula e-mail já cadastrado. Removido no Milestone 8 (Supabase Auth).
     if (data.email === "existente@teste.com") {
       setError("Este e-mail já está em uso. Tente outro ou faça login.")
       return

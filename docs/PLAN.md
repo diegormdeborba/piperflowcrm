@@ -52,15 +52,15 @@
 **Objetivo:** Telas de login, cadastro e recuperação de senha com layout e UX completos, ainda sem backend real.
 
 ### Entregas
-- [ ] Layout de autenticação (split screen ou centralizado)
-- [ ] Página `/login` — form email + senha + link para cadastro
-- [ ] Página `/register` — form nome + email + senha + confirmação
-- [ ] Página `/forgot-password` — form de recuperação por e-mail
-- [ ] Página `/reset-password` — form nova senha (com token na URL)
-- [ ] Validação client-side com react-hook-form + zod
-- [ ] Estados de loading, erro e sucesso nos formulários
-- [ ] Proteção de rotas: middleware mock redirecionando para `/login`
-- [ ] Fluxo de onboarding pós-cadastro (criar ou entrar em workspace)
+- [x] Layout de autenticação (split screen ou centralizado)
+- [x] Página `/login` — form email + senha + link para cadastro
+- [x] Página `/register` — form nome + email + senha + confirmação
+- [x] Página `/forgot-password` — form de recuperação por e-mail
+- [x] Página `/reset-password` — form nova senha (com token na URL)
+- [x] Validação client-side com react-hook-form + zod
+- [x] Estados de loading, erro e sucesso nos formulários
+- [x] Proteção de rotas: middleware mock redirecionando para `/login`
+- [x] Fluxo de onboarding pós-cadastro (criar ou entrar em workspace)
 
 **Commit final:** `feat: auth UI — login, register, password recovery flows`
 
@@ -72,15 +72,15 @@
 **Objetivo:** Estrutura interna do app com sidebar, header, navegação e páginas esqueleto.
 
 ### Entregas
-- [ ] Layout autenticado `/app/` com sidebar fixa
-- [ ] Sidebar com navegação: Dashboard, Leads, Pipeline, Atividades, Configurações
-- [ ] Header com avatar do usuário, dropdown e seletor de workspace
-- [ ] Breadcrumbs dinâmicos
-- [ ] Páginas esqueleto vazias para todas as rotas internas
-- [ ] Componente de loading (skeleton screens)
-- [ ] Componente de estado vazio (empty state)
-- [ ] Responsividade: sidebar colapsável em mobile (sheet/drawer)
-- [ ] Tema claro/escuro via shadcn/ui `ThemeProvider`
+- [x] Layout autenticado `/app/` com sidebar fixa
+- [x] Sidebar com navegação: Dashboard, Leads, Pipeline, Atividades, Configurações
+- [x] Header com avatar do usuário, dropdown e seletor de workspace
+- [x] Breadcrumbs dinâmicos
+- [x] Páginas esqueleto vazias para todas as rotas internas
+- [x] Componente de loading (skeleton screens)
+- [x] Componente de estado vazio (empty state)
+- [x] Responsividade: sidebar colapsável em mobile (sheet/drawer)
+- [x] Tema claro/escuro via shadcn/ui `ThemeProvider`
 
 **Commit final:** `feat: app shell — sidebar, header, workspace switcher, skeleton pages`
 
@@ -92,18 +92,18 @@
 **Objetivo:** CRUD completo de leads com listagem, filtros, detalhes e timeline — com dados mock.
 
 ### Entregas
-- [ ] Página `/app/leads` — tabela de leads com colunas (nome, empresa, status, responsável, criado em)
-- [ ] Barra de busca e filtros (status, responsável, data range)
-- [ ] Paginação da listagem
-- [ ] Modal ou sheet lateral para criar novo lead
-- [ ] Formulário de lead: nome, e-mail, telefone, empresa, cargo, status, responsável
-- [ ] Validação com react-hook-form + zod
-- [ ] Página `/app/leads/[id]` — perfil completo do lead
-- [ ] Seção de informações de contato
-- [ ] Timeline de atividades (dados mock)
-- [ ] Botão para adicionar atividade (modal: tipo, descrição, data)
-- [ ] Badge de status colorido
-- [ ] Ação de editar/excluir lead
+- [x] Página `/app/leads` — tabela de leads com colunas (nome, empresa, status, responsável, criado em)
+- [x] Barra de busca e filtros (status, responsável, data range)
+- [x] Paginação da listagem
+- [x] Modal ou sheet lateral para criar novo lead
+- [x] Formulário de lead: nome, e-mail, telefone, empresa, cargo, status, responsável
+- [x] Validação com react-hook-form + zod
+- [x] Página `/app/leads/[id]` — perfil completo do lead
+- [x] Seção de informações de contato
+- [x] Timeline de atividades (dados mock)
+- [x] Botão para adicionar atividade (modal: tipo, descrição, data)
+- [x] Badge de status colorido
+- [x] Ação de editar/excluir lead
 
 **Commit final:** `feat: leads UI — list, filters, detail page, activity timeline (mock data)`
 
@@ -115,16 +115,16 @@
 **Objetivo:** Board Kanban visual e funcional com drag-and-drop, usando dados mock.
 
 ### Entregas
-- [ ] Página `/app/pipeline`
-- [ ] 6 colunas fixas: Novo Lead, Contato Realizado, Proposta Enviada, Negociação, Fechado Ganho, Fechado Perdido
-- [ ] Cards com: título do negócio, valor (R$), lead vinculado, avatar do responsável, prazo
-- [ ] Drag-and-drop entre colunas com `@dnd-kit`
-- [ ] Animação suave ao arrastar
-- [ ] Modal de criação de novo negócio (título, valor, lead, responsável, prazo, etapa)
-- [ ] Clique no card abre sheet lateral com detalhes e edição
-- [ ] Contador de cards e valor total por coluna
-- [ ] Estado vazio por coluna (empty state)
-- [ ] Filtro por responsável
+- [x] Página `/app/pipeline`
+- [x] 6 colunas fixas: Novo Lead, Contato Realizado, Proposta Enviada, Negociação, Fechado Ganho, Fechado Perdido
+- [x] Cards com: título do negócio, valor (R$), lead vinculado, avatar do responsável, prazo
+- [x] Drag-and-drop entre colunas com `@dnd-kit`
+- [x] Animação suave ao arrastar
+- [x] Modal de criação de novo negócio (título, valor, lead, responsável, prazo, etapa)
+- [x] Clique no card abre sheet lateral com detalhes e edição
+- [x] Contador de cards e valor total por coluna
+- [x] Estado vazio por coluna (empty state)
+- [x] Filtro por responsável
 
 **Commit final:** `feat: kanban UI — drag-and-drop pipeline with 6 stages (mock data)`
 
@@ -136,13 +136,13 @@
 **Objetivo:** Página de métricas e resumo executivo com gráficos e cards, dados mock.
 
 ### Entregas
-- [ ] Página `/app/dashboard`
-- [ ] Cards de métricas: total de leads, negócios abertos, valor do pipeline, taxa de conversão
-- [ ] Gráfico de funil de vendas (Recharts `FunnelChart`)
-- [ ] Gráfico de negócios por mês (Recharts `BarChart`)
-- [ ] Tabela de negócios com prazo próximo (próximos 7 dias)
-- [ ] Saudação personalizada com nome do usuário
-- [ ] Responsividade total (grid adaptativo)
+- [x] Página `/app/dashboard`
+- [x] Cards de métricas: total de leads, negócios abertos, valor do pipeline, taxa de conversão
+- [x] Gráfico de funil de vendas (Recharts `FunnelChart`)
+- [x] Gráfico de negócios por mês (Recharts `BarChart`)
+- [x] Tabela de negócios com prazo próximo (próximos 7 dias)
+- [x] Saudação personalizada com nome do usuário
+- [x] Responsividade total (grid adaptativo)
 
 **Commit final:** `feat: dashboard UI — metrics cards, funnel chart, deals summary (mock data)`
 

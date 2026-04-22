@@ -25,7 +25,8 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })
 }
 
-const TODAY = new Date("2026-04-21")
+const TODAY = new Date()
+TODAY.setHours(0, 0, 0, 0)
 
 function getDueDateInfo(due_date: string | null): { label: string; className: string; Icon: React.ElementType } | null {
   if (!due_date) return null
