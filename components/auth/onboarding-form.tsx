@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -19,6 +18,7 @@ import {
   FormDescription,
 } from "@/components/ui/form"
 import { cn } from "@/lib/utils"
+import { createWorkspace, joinWorkspaceByInvite } from "@/app/onboarding/actions"
 
 type Step = "choice" | "create" | "join"
 
@@ -90,7 +90,7 @@ function ChoiceStep({ onSelect }: { onSelect: (step: Step) => void }) {
 }
 
 function CreateStep({ onBack }: { onBack: () => void }) {
-  const router = useRouter()
+  const [error, setError] = useState<string | null>(null)
 
   const form = useForm<CreateData>({
     resolver: zodResolver(createSchema),
@@ -99,9 +99,10 @@ function CreateStep({ onBack }: { onBack: () => void }) {
 
   const { isSubmitting } = form.formState
 
-  async function onSubmit() {
-    await new Promise((r) => setTimeout(r, 1000))
-    router.push("/app/dashboard")
+  async function onSubmit(data: CreateData) {
+    setError(null)
+    const result = await createWorkspace(data.workspaceName)
+    if (result?.error) setError(result.error)
   }
 
   return (
@@ -132,6 +133,12 @@ function CreateStep({ onBack }: { onBack: () => void }) {
             )}
           />
 
+          {error && (
+            <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-md border border-red-200">
+              {error}
+            </p>
+          )}
+
           <div className="flex gap-3">
             <Button type="button" variant="outline" onClick={onBack} className="flex-1">
               Voltar
@@ -148,7 +155,6 @@ function CreateStep({ onBack }: { onBack: () => void }) {
 }
 
 function JoinStep({ onBack }: { onBack: () => void }) {
-  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
 
   const form = useForm<JoinData>({
@@ -160,14 +166,8 @@ function JoinStep({ onBack }: { onBack: () => void }) {
 
   async function onSubmit(data: JoinData) {
     setError(null)
-    await new Promise((r) => setTimeout(r, 1000))
-
-    if (data.inviteCode !== "DEMO123") {
-      setError("Código de convite inválido ou expirado.")
-      return
-    }
-
-    router.push("/app/dashboard")
+    const result = await joinWorkspaceByInvite(data.inviteCode)
+    if (result?.error) setError(result.error)
   }
 
   return (

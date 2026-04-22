@@ -34,6 +34,7 @@ export type Database = {
           stripe_customer_id?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       workspace_members: {
         Row: {
@@ -51,6 +52,15 @@ export type Database = {
           user_id?: string
           role?: "admin" | "member"
         }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       leads: {
         Row: {
@@ -89,6 +99,15 @@ export type Database = {
           owner_id?: string
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "leads_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       deals: {
         Row: {
@@ -124,6 +143,15 @@ export type Database = {
           due_date?: string | null
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "deals_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       activities: {
         Row: {
@@ -153,6 +181,15 @@ export type Database = {
           author_id?: string
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "activities_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       invites: {
         Row: {
@@ -182,8 +219,18 @@ export type Database = {
           accepted_at?: string | null
           expires_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "invites_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
+    Views: Record<string, never>
     Functions: {
       is_workspace_member: {
         Args: { wid: string }
@@ -194,6 +241,8 @@ export type Database = {
         Returns: boolean
       }
     }
+    Enums: Record<string, never>
+    CompositeTypes: Record<string, never>
   }
 }
 

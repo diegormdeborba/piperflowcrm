@@ -1,29 +1,52 @@
+import { createServerClient } from "@supabase/ssr"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-const publicRoutes = ["/", "/login", "/register", "/forgot-password", "/reset-password"]
 const authRoutes = ["/login", "/register", "/forgot-password", "/reset-password"]
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  const mockSession = request.cookies.get("mock-session")?.value
+export async function middleware(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request })
 
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route))
-  const isPublicRoute = publicRoutes.some(
-    (route) => pathname === route || pathname.startsWith("/api")
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          supabaseResponse = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          )
+        },
+      },
+    }
   )
 
-  if (!isPublicRoute && !mockSession) {
+  // getUser() is the only safe way to verify the session in middleware
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const { pathname } = request.nextUrl
+  const isAppRoute = pathname.startsWith("/app")
+  const isProtectedRoute = isAppRoute || pathname.startsWith("/onboarding")
+  const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r))
+
+  if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL("/login", request.url))
   }
 
-  if (isAuthRoute && mockSession) {
+  if (isAuthRoute && user) {
     return NextResponse.redirect(new URL("/app/dashboard", request.url))
   }
 
-  return NextResponse.next()
+  return supabaseResponse
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.png$).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|auth/callback|.*\\.png$).*)"],
 }

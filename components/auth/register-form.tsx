@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Loader2 } from "lucide-react"
+import { Loader2, MailCheck } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { createClient } from "@/lib/supabase/client"
 
 const schema = z
   .object({
@@ -40,6 +41,7 @@ type FormData = z.infer<typeof schema>
 export function RegisterForm() {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
+  const [confirmEmail, setConfirmEmail] = useState<string | null>(null)
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -56,16 +58,55 @@ export function RegisterForm() {
 
   async function onSubmit(data: FormData) {
     setError(null)
-    await new Promise((r) => setTimeout(r, 1200))
+    const supabase = createClient()
+    const { data: signUpData, error: authError } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        data: { full_name: data.name },
+      },
+    })
 
-    // Mock: simula e-mail já cadastrado. Removido no Milestone 8 (Supabase Auth).
-    if (data.email === "existente@teste.com") {
-      setError("Este e-mail já está em uso. Tente outro ou faça login.")
+    if (authError) {
+      if (authError.message.toLowerCase().includes("already registered")) {
+        setError("Este e-mail já está em uso. Tente outro ou faça login.")
+      } else {
+        setError(authError.message)
+      }
       return
     }
 
-    document.cookie = "mock-session=true; path=/"
+    // Email confirmation required — session is null until confirmed
+    if (signUpData.user && !signUpData.session) {
+      setConfirmEmail(data.email)
+      return
+    }
+
     router.push("/onboarding")
+  }
+
+  if (confirmEmail) {
+    return (
+      <div className="space-y-6 text-center">
+        <div className="flex justify-center">
+          <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
+            <MailCheck className="w-8 h-8 text-blue-600" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold text-slate-900">Confirme seu e-mail</h1>
+          <p className="text-slate-500 text-sm">
+            Enviamos um link de confirmação para{" "}
+            <span className="font-medium text-slate-700">{confirmEmail}</span>.
+            <br />
+            Clique no link para ativar sua conta.
+          </p>
+        </div>
+        <Button asChild variant="outline" className="w-full">
+          <Link href="/login">Ir para o login</Link>
+        </Button>
+      </div>
+    )
   }
 
   return (

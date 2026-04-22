@@ -1,5 +1,6 @@
 "use client"
 
+import { useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { LogOut, Settings, User } from "lucide-react"
 
@@ -12,14 +13,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { MOCK_USER } from "@/lib/mock-data"
+import { useUser } from "@/components/providers/user-provider"
+import { logout } from "@/app/(auth)/actions"
 
 export function UserMenu() {
   const router = useRouter()
+  const { user } = useUser()
+  const [isPending, startTransition] = useTransition()
 
   function handleLogout() {
-    document.cookie = "mock-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-    router.push("/login")
+    startTransition(() => logout())
   }
 
   return (
@@ -28,20 +31,20 @@ export function UserMenu() {
         <button className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-accent transition-colors outline-none">
           <Avatar className="h-7 w-7">
             <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-              {MOCK_USER.avatarFallback}
+              {user.avatarFallback}
             </AvatarFallback>
           </Avatar>
           <div className="hidden md:block text-left min-w-0">
-            <p className="text-xs font-medium leading-none truncate max-w-[120px]">{MOCK_USER.name}</p>
-            <p className="text-xs text-muted-foreground truncate max-w-[120px]">{MOCK_USER.email}</p>
+            <p className="text-xs font-medium leading-none truncate max-w-[120px]">{user.name}</p>
+            <p className="text-xs text-muted-foreground truncate max-w-[120px]">{user.email}</p>
           </div>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium">{MOCK_USER.name}</p>
-            <p className="text-xs text-muted-foreground">{MOCK_USER.email}</p>
+            <p className="text-sm font-medium">{user.name}</p>
+            <p className="text-xs text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -54,9 +57,13 @@ export function UserMenu() {
           Configurações
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive" onClick={handleLogout}>
+        <DropdownMenuItem
+          className="gap-2 text-destructive focus:text-destructive"
+          onClick={handleLogout}
+          disabled={isPending}
+        >
           <LogOut className="h-4 w-4" />
-          Sair
+          {isPending ? "Saindo..." : "Sair"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

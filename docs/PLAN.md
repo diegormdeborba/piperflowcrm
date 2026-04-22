@@ -186,15 +186,15 @@
 **Objetivo:** Conectar telas de autenticação ao Supabase Auth real.
 
 ### Entregas
-- [ ] Server Actions para login, register, logout
-- [ ] Middleware Next.js com verificação de sessão Supabase
-- [ ] Proteção real de rotas autenticadas
-- [ ] Fluxo de e-mail de confirmação (Supabase built-in)
-- [ ] Fluxo de recuperação de senha (Supabase built-in)
-- [ ] Onboarding: criar workspace após primeiro login
-- [ ] Cookie de sessão seguro (SSR-safe)
-- [ ] Hook `useUser()` client-side via Context
-- [ ] Remover dados mock de autenticação
+- [x] Server Actions para login, register, logout
+- [x] Middleware Next.js com verificação de sessão Supabase
+- [x] Proteção real de rotas autenticadas
+- [x] Fluxo de e-mail de confirmação (Supabase built-in)
+- [x] Fluxo de recuperação de senha (Supabase built-in)
+- [x] Onboarding: criar workspace após primeiro login
+- [x] Cookie de sessão seguro (SSR-safe)
+- [x] Hook `useUser()` client-side via Context
+- [x] Remover dados mock de autenticação
 
 **Commit final:** `feat: auth backend — Supabase Auth connected, session middleware, onboarding flow`
 

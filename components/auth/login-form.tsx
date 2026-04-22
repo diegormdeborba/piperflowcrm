@@ -19,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { createClient } from "@/lib/supabase/client"
 
 const schema = z.object({
   email: z.string().email("E-mail inválido"),
@@ -41,16 +42,19 @@ export function LoginForm() {
 
   async function onSubmit(data: FormData) {
     setError(null)
-    await new Promise((r) => setTimeout(r, 1000))
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    })
 
-    // Mock: simula credencial inválida. Removido no Milestone 8 (Supabase Auth).
-    if (data.email === "erro@teste.com") {
+    if (authError) {
       setError("E-mail ou senha incorretos. Tente novamente.")
       return
     }
 
-    document.cookie = "mock-session=true; path=/"
     router.push("/app/dashboard")
+    router.refresh()
   }
 
   return (

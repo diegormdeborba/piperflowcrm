@@ -6,14 +6,23 @@ import { MetricCard } from "@/components/dashboard/metric-card"
 import { PipelineFunnel } from "@/components/dashboard/pipeline-funnel"
 import { DealsByMonth } from "@/components/dashboard/deals-by-month"
 import { UpcomingDeals } from "@/components/dashboard/upcoming-deals"
-import { MOCK_DEALS, MOCK_LEADS, MOCK_USER } from "@/lib/mock-data"
+import { MOCK_DEALS, MOCK_LEADS } from "@/lib/mock-data"
 import { formatCurrency } from "@/lib/utils"
+import { createClient } from "@/lib/supabase/server"
 
 export const metadata: Metadata = {
   title: "Dashboard — PipeFlow CRM",
 }
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const userName =
+    (user?.user_metadata?.full_name as string | undefined) ?? user?.email ?? "Usuário"
+
   const openDeals = MOCK_DEALS.filter((d) => d.stage !== "won" && d.stage !== "lost")
   const pipelineValue = openDeals.reduce((acc, d) => acc + (d.value ?? 0), 0)
   const wonDeals = MOCK_DEALS.filter((d) => d.stage === "won").length
@@ -42,7 +51,7 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <PageHeader
         title="Dashboard"
-        description={`${greeting}, ${MOCK_USER.name}! Aqui está o resumo do seu pipeline.`}
+        description={`${greeting}, ${userName}! Aqui está o resumo do seu pipeline.`}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
