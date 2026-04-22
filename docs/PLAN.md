@@ -40,6 +40,7 @@
 - [x] Página responsiva (mobile-first)
 - [x] Animações de entrada suaves (Tailwind transitions)
 - [x] Metatags SEO básicas (title, description, og:image)
+- [x] Seção de stats numéricos no Hero (+47% conversão, 3.2x leads, -62% ciclo, 1200+ times)
 
 **Commit final:** `feat: landing page — hero, features, pipeline preview, pricing, CTA sections`
 
