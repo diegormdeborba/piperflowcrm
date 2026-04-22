@@ -35,9 +35,16 @@ export async function middleware(request: NextRequest) {
   const isAppRoute = pathname.startsWith("/app")
   const isProtectedRoute = isAppRoute || pathname.startsWith("/onboarding")
   const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r))
+  const isInviteRoute = pathname.startsWith("/invite")
 
   if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL("/login", request.url))
+  }
+
+  if (isInviteRoute && !user) {
+    const loginUrl = new URL("/login", request.url)
+    loginUrl.searchParams.set("next", pathname)
+    return NextResponse.redirect(loginUrl)
   }
 
   if (isAuthRoute && user) {

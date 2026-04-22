@@ -18,6 +18,8 @@ export type WorkspaceInfo = {
 type UserContextValue = {
   user: AuthUser
   workspace: WorkspaceInfo | null
+  role: "admin" | "member"
+  allWorkspaces: WorkspaceInfo[]
 }
 
 const UserContext = createContext<UserContextValue | null>(null)
@@ -25,10 +27,12 @@ const UserContext = createContext<UserContextValue | null>(null)
 export function UserProvider({
   user,
   workspace,
+  role,
+  allWorkspaces,
   children,
 }: UserContextValue & { children: React.ReactNode }) {
   return (
-    <UserContext.Provider value={{ user, workspace }}>
+    <UserContext.Provider value={{ user, workspace, role, allWorkspaces }}>
       {children}
     </UserContext.Provider>
   )
