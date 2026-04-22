@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 
 function slugify(name: string): string {
@@ -25,7 +26,11 @@ export async function createWorkspace(name: string) {
   const baseSlug = slugify(name)
   const slug = baseSlug || `workspace-${Date.now()}`
 
-  const { data: workspace, error: wsError } = await supabase
+  // Server Action usa service role para evitar dependência circular no RLS:
+  // workspace_members INSERT precisa de admin, mas o admin só existe após o INSERT.
+  const admin = createAdminClient()
+
+  const { data: workspace, error: wsError } = await admin
     .from("workspaces")
     .insert({ name, slug })
     .select("id")
@@ -35,7 +40,7 @@ export async function createWorkspace(name: string) {
     return { error: "Não foi possível criar o workspace. Tente novamente." }
   }
 
-  const { error: memberError } = await supabase.from("workspace_members").insert({
+  const { error: memberError } = await admin.from("workspace_members").insert({
     workspace_id: workspace.id,
     user_id: user.id,
     role: "admin",
