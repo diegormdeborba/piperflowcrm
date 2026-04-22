@@ -154,20 +154,27 @@
 **Objetivo:** Banco de dados configurado com schema completo, RLS e autenticação Supabase funcionando.
 
 ### Entregas
-- [ ] Criar projeto Supabase
-- [ ] Schema SQL completo:
-  - [ ] `workspaces` (id, name, slug, plan, created_at)
-  - [ ] `workspace_members` (workspace_id, user_id, role: admin|member)
-  - [ ] `leads` (id, workspace_id, name, email, phone, company, role, status, owner_id, created_at)
-  - [ ] `deals` (id, workspace_id, lead_id, title, value, stage, owner_id, due_date, created_at)
-  - [ ] `activities` (id, workspace_id, lead_id, type, description, author_id, created_at)
-  - [ ] `invites` (id, workspace_id, email, role, token, accepted_at, expires_at)
-- [ ] Row Level Security (RLS) em todas as tabelas
-- [ ] Policies: membros acessam apenas dados do seu workspace
-- [ ] Configurar Supabase Auth (email + password)
-- [ ] Criar `lib/supabase/server.ts` e `lib/supabase/client.ts`
-- [ ] Variáveis de ambiente configuradas (local + Vercel)
-- [ ] Seed SQL com dados de exemplo para desenvolvimento
+- [ ] Criar projeto Supabase *(manual — ver instruções abaixo)*
+- [x] Schema SQL completo:
+  - [x] `workspaces` (id, name, slug, plan, created_at)
+  - [x] `workspace_members` (workspace_id, user_id, role: admin|member)
+  - [x] `leads` (id, workspace_id, name, email, phone, company, role, status, owner_id, created_at)
+  - [x] `deals` (id, workspace_id, lead_id, title, value, stage, owner_id, due_date, created_at)
+  - [x] `activities` (id, workspace_id, lead_id, type, description, author_id, created_at)
+  - [x] `invites` (id, workspace_id, email, role, token, accepted_at, expires_at)
+- [x] Row Level Security (RLS) em todas as tabelas
+- [x] Policies: membros acessam apenas dados do seu workspace
+- [ ] Configurar Supabase Auth (email + password) *(manual — habilitar no Dashboard)*
+- [x] Criar `lib/supabase/server.ts` e `lib/supabase/client.ts`
+- [ ] Variáveis de ambiente configuradas (local + Vercel) *(manual — após criar projeto)*
+- [x] Seed SQL com dados de exemplo para desenvolvimento
+
+> **Setup manual necessário:**
+> 1. Criar projeto em [supabase.com](https://supabase.com) → copiar URL e chaves para `.env.local`
+> 2. No SQL Editor: executar `supabase/migrations/001_initial_schema.sql`
+> 3. Em Authentication → Providers: confirmar Email habilitado
+> 4. Criar 2 usuários de teste, atualizar UUIDs em `supabase/seed.sql` e executar
+> 5. Configurar variáveis na Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 **Commit final:** `feat: supabase schema — tables, RLS policies, auth setup, seed data`
 
