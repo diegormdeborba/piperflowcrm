@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 
-import { createClient } from "@/lib/supabase/server"
 import { getActiveWorkspace } from "@/lib/workspace"
 import { PipelineClient } from "@/components/pipeline/pipeline-client"
 import type { Deal, Lead } from "@/types"
@@ -10,10 +9,9 @@ export const metadata: Metadata = {
 }
 
 export default async function PipelinePage() {
-  const { workspace } = await getActiveWorkspace()
-  const supabase = await createClient()
+  const { workspace, supabase } = await getActiveWorkspace()
 
-  const [{ data: deals }, { data: leads }, { data: members }] = await Promise.all([
+  const [{ data: deals, error: dealsError }, { data: leads }] = await Promise.all([
     supabase
       .from("deals")
       .select("*")
@@ -24,14 +22,11 @@ export default async function PipelinePage() {
       .select("id, name, company")
       .eq("workspace_id", workspace.id)
       .order("name"),
-    supabase
-      .from("workspace_members")
-      .select("user_id")
-      .eq("workspace_id", workspace.id),
   ])
 
-  // Fetch display names for members via auth metadata stored in workspace_members isn't available,
-  // so we simplify owners to user_ids present in deals
+  if (dealsError) throw new Error("Falha ao carregar pipeline")
+
+  // Owner filter uses user_ids present in deals; display names require a profiles table
   const ownerIds = Array.from(new Set((deals ?? []).map((d) => d.owner_id)))
   const owners: { id: string; name: string }[] = ownerIds.map((id) => ({
     id,

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
+import { Suspense } from "react"
 import type { Metadata } from "next"
 
-import { createClient } from "@/lib/supabase/server"
 import { getActiveWorkspace } from "@/lib/workspace"
 import { LeadDetailClient } from "@/components/leads/detail/lead-detail-client"
 import type { Lead, Activity } from "@/types"
@@ -12,15 +12,19 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
-  const supabase = await createClient()
-  const { data } = await supabase.from("leads").select("name").eq("id", id).single()
+  const { workspace, supabase } = await getActiveWorkspace()
+  const { data } = await supabase
+    .from("leads")
+    .select("name")
+    .eq("id", id)
+    .eq("workspace_id", workspace.id)
+    .single()
   return { title: data ? `${data.name} — PipeFlow CRM` : "Lead — PipeFlow CRM" }
 }
 
 export default async function LeadDetailPage({ params }: Props) {
   const { id } = await params
-  const { workspace } = await getActiveWorkspace()
-  const supabase = await createClient()
+  const { workspace, supabase } = await getActiveWorkspace()
 
   const [{ data: lead }, { data: activities }] = await Promise.all([
     supabase
@@ -40,9 +44,11 @@ export default async function LeadDetailPage({ params }: Props) {
   if (!lead) notFound()
 
   return (
-    <LeadDetailClient
-      lead={lead as Lead}
-      activities={(activities ?? []) as Activity[]}
-    />
+    <Suspense>
+      <LeadDetailClient
+        lead={lead as Lead}
+        activities={(activities ?? []) as Activity[]}
+      />
+    </Suspense>
   )
 }

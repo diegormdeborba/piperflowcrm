@@ -1,9 +1,7 @@
 "use server"
 
-import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 
-import { createClient } from "@/lib/supabase/server"
 import { getActiveWorkspace } from "@/lib/workspace"
 import type { LeadFormData } from "@/components/leads/lead-form"
 import type { ActivityType } from "@/types"
@@ -63,7 +61,7 @@ export async function deleteLead(leadId: string): Promise<{ error?: string }> {
   if (error) return { error: "Erro ao excluir lead." }
 
   revalidatePath("/app/leads")
-  redirect("/app/leads")
+  return {}
 }
 
 export async function createActivity(
@@ -72,6 +70,16 @@ export async function createActivity(
   description: string
 ): Promise<{ error?: string }> {
   const { user, workspace, supabase } = await getActiveWorkspace()
+
+  // Validate lead belongs to this workspace before inserting activity
+  const { data: lead } = await supabase
+    .from("leads")
+    .select("id")
+    .eq("id", leadId)
+    .eq("workspace_id", workspace.id)
+    .single()
+
+  if (!lead) return { error: "Lead não encontrado." }
 
   const { error } = await supabase.from("activities").insert({
     workspace_id: workspace.id,

@@ -6,7 +6,6 @@ import { MetricCard } from "@/components/dashboard/metric-card"
 import { PipelineFunnel } from "@/components/dashboard/pipeline-funnel"
 import { DealsByMonth } from "@/components/dashboard/deals-by-month"
 import { UpcomingDeals } from "@/components/dashboard/upcoming-deals"
-import { createClient } from "@/lib/supabase/server"
 import { getActiveWorkspace } from "@/lib/workspace"
 import { formatCurrency } from "@/lib/utils"
 
@@ -18,8 +17,7 @@ const PT_MONTHS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set"
 const ACTIVE_STAGES = ["new_lead", "contacted", "proposal_sent", "negotiation"] as const
 
 export default async function DashboardPage() {
-  const { user, workspace } = await getActiveWorkspace()
-  const supabase = await createClient()
+  const { user, workspace, supabase } = await getActiveWorkspace()
 
   const wid = workspace.id
   const today = new Date()
@@ -29,7 +27,10 @@ export default async function DashboardPage() {
   const sixMonthsAgo = new Date(today)
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5)
   sixMonthsAgo.setDate(1)
+  const todayStr = today.toISOString().split("T")[0]
+  const in7DaysStr = in7Days.toISOString().split("T")[0]
 
+  // All 7 queries run in parallel — including lead names for upcoming deals
   const [
     { count: leadsCount },
     { data: openDealsData },
@@ -37,6 +38,7 @@ export default async function DashboardPage() {
     { count: lostCount },
     { data: upcomingRaw },
     { data: allDealsRaw },
+    { data: upcomingLeads },
   ] = await Promise.all([
     supabase.from("leads").select("*", { count: "exact", head: true }).eq("workspace_id", wid),
     supabase.from("deals").select("value, stage").eq("workspace_id", wid).not("stage", "in", "(won,lost)"),
@@ -47,14 +49,19 @@ export default async function DashboardPage() {
       .select("id, title, value, stage, due_date, lead_id")
       .eq("workspace_id", wid)
       .not("stage", "in", "(won,lost)")
-      .gte("due_date", today.toISOString().split("T")[0])
-      .lte("due_date", in7Days.toISOString().split("T")[0])
+      .gte("due_date", todayStr)
+      .lte("due_date", in7DaysStr)
       .order("due_date"),
     supabase
       .from("deals")
       .select("stage, created_at")
       .eq("workspace_id", wid)
       .gte("created_at", sixMonthsAgo.toISOString()),
+    // Pre-fetch lead names for upcoming deals using workspace scope
+    supabase
+      .from("leads")
+      .select("id, name")
+      .eq("workspace_id", wid),
   ])
 
   const openDeals = openDealsData ?? []
@@ -80,13 +87,7 @@ export default async function DashboardPage() {
     return { label: PT_MONTHS[month], count }
   })
 
-  // Fetch lead names for upcoming deals
-  const leadIds = Array.from(new Set((upcomingRaw ?? []).map((d) => d.lead_id).filter(Boolean))) as string[]
-  const { data: leadsForDeals } = leadIds.length
-    ? await supabase.from("leads").select("id, name").in("id", leadIds)
-    : { data: [] }
-
-  const leadNameMap = Object.fromEntries((leadsForDeals ?? []).map((l) => [l.id, l.name]))
+  const leadNameMap = Object.fromEntries((upcomingLeads ?? []).map((l) => [l.id, l.name]))
 
   const upcomingDeals = (upcomingRaw ?? []).map((d) => ({
     id: d.id,

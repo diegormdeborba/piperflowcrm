@@ -1,6 +1,6 @@
+import { Suspense } from "react"
 import type { Metadata } from "next"
 
-import { createClient } from "@/lib/supabase/server"
 import { getActiveWorkspace } from "@/lib/workspace"
 import { LeadsClient } from "@/components/leads/leads-client"
 import type { Lead, LeadStatus } from "@/types"
@@ -16,8 +16,7 @@ interface Props {
 }
 
 export default async function LeadsPage({ searchParams }: Props) {
-  const { workspace } = await getActiveWorkspace()
-  const supabase = await createClient()
+  const { workspace, supabase } = await getActiveWorkspace()
 
   const { search = "", status = "all", page = "1" } = await searchParams
   const currentPage = Math.max(1, Number(page) || 1)
@@ -26,6 +25,9 @@ export default async function LeadsPage({ searchParams }: Props) {
   const validStatuses: LeadStatus[] = ["new", "contacted", "qualified", "lost"]
   const statusFilter = validStatuses.includes(status as LeadStatus) ? (status as LeadStatus) : null
 
+  // Sanitize search to prevent PostgREST filter injection
+  const safeSearch = search.replace(/[%_\\,()]/g, "")
+
   let query = supabase
     .from("leads")
     .select("*", { count: "exact" })
@@ -33,23 +35,27 @@ export default async function LeadsPage({ searchParams }: Props) {
     .order("created_at", { ascending: false })
     .range(offset, offset + PAGE_SIZE - 1)
 
-  if (search) {
-    query = query.or(`name.ilike.%${search}%,company.ilike.%${search}%`)
+  if (safeSearch) {
+    query = query.or(`name.ilike.%${safeSearch}%,company.ilike.%${safeSearch}%`)
   }
   if (statusFilter) {
     query = query.eq("status", statusFilter)
   }
 
-  const { data, count } = await query
+  const { data, count, error } = await query
+
+  if (error) throw new Error("Falha ao carregar leads")
 
   return (
-    <LeadsClient
-      leads={(data ?? []) as Lead[]}
-      totalCount={count ?? 0}
-      pageSize={PAGE_SIZE}
-      currentPage={currentPage}
-      currentSearch={search}
-      currentStatus={(statusFilter ?? "all") as LeadStatus | "all"}
-    />
+    <Suspense>
+      <LeadsClient
+        leads={(data ?? []) as Lead[]}
+        totalCount={count ?? 0}
+        pageSize={PAGE_SIZE}
+        currentPage={currentPage}
+        currentSearch={search}
+        currentStatus={(statusFilter ?? "all") as LeadStatus | "all"}
+      />
+    </Suspense>
   )
 }
