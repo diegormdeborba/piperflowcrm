@@ -49,20 +49,28 @@ export function DealBoard({ deals, leads, ownerFallback, onMove, onCardClick, on
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="bg-slate-50 dark:bg-slate-900/20 rounded-2xl p-4 -mx-1">
-        <div className="flex gap-4 overflow-x-auto pb-2">
-          {STAGES.map((stage) => (
-            <DealColumn
-              key={stage}
-              stage={stage}
-              deals={deals.filter((d) => d.stage === stage)}
-              leads={leads}
-              ownerFallback={ownerFallback}
-              onCardClick={onCardClick}
-              onAddDeal={() => onAddDeal(stage)}
-            />
-          ))}
+      <div className="bg-slate-50 dark:bg-slate-900/20 rounded-2xl p-3 sm:p-4 -mx-1">
+        {/* wrapper relativo para o fade de scroll */}
+        <div className="relative">
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 scroll-smooth">
+            {STAGES.map((stage) => (
+              <DealColumn
+                key={stage}
+                stage={stage}
+                deals={deals.filter((d) => d.stage === stage)}
+                leads={leads}
+                ownerFallback={ownerFallback}
+                onCardClick={onCardClick}
+                onAddDeal={() => onAddDeal(stage)}
+              />
+            ))}
+          </div>
+          {/* fade direito — visível só em mobile/tablet para indicar scroll */}
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-slate-50 dark:from-slate-900 to-transparent lg:hidden" />
         </div>
+        <p className="text-xs text-muted-foreground text-center mt-1 lg:hidden">
+          Deslize para ver todas as etapas
+        </p>
       </div>
 
       <DragOverlay>

@@ -9,9 +9,9 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, description, action, className }: PageHeaderProps) {
   return (
-    <div className={cn("flex items-start justify-between gap-4", className)}>
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
+    <div className={cn("flex flex-wrap items-start justify-between gap-3", className)}>
+      <div className="space-y-1 min-w-0">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground leading-tight">{title}</h1>
         {description && (
           <p className="text-sm text-muted-foreground">{description}</p>
         )}
