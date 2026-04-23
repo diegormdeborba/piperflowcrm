@@ -10,8 +10,8 @@ export async function sendInviteEmail({
   to: string
   workspaceName: string
   inviteUrl: string
-}) {
-  await resend.emails.send({
+}): Promise<{ error?: string }> {
+  const { error } = await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL ?? "noreply@piperflow.com.br",
     to,
     subject: `Você foi convidado para ${workspaceName} no PipeFlow CRM`,
@@ -32,4 +32,6 @@ export async function sendInviteEmail({
       </div>
     `,
   })
+  if (error) return { error: error.message }
+  return {}
 }

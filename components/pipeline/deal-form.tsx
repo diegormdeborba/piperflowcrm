@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -42,6 +43,62 @@ interface DealFormProps {
   onCancel: () => void
 }
 
+function CurrencyInput({ value, onChange, onBlur, name, ref: inputRef }: {
+  value: number | null
+  onChange: (v: number | null) => void
+  onBlur: () => void
+  name: string
+  ref?: React.Ref<HTMLInputElement>
+}) {
+  const toDisplay = (v: number | null) =>
+    v != null ? v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ""
+
+  const [display, setDisplay] = useState(() => toDisplay(value))
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    // permite dígitos, vírgula e ponto
+    const raw = e.target.value.replace(/[^\d,.]/g, "")
+    setDisplay(raw)
+  }
+
+  function handleBlur() {
+    if (!display.trim()) {
+      onChange(null)
+      setDisplay("")
+    } else {
+      // "1.500,50" → 1500.50  /  "1500,50" → 1500.50  /  "1500.50" → 1500.50
+      const normalized = display.replace(/\./g, "").replace(",", ".")
+      const num = parseFloat(normalized)
+      if (!isNaN(num) && num >= 0) {
+        onChange(num)
+        setDisplay(toDisplay(num))
+      } else {
+        onChange(null)
+        setDisplay("")
+      }
+    }
+    onBlur()
+  }
+
+  return (
+    <div className="relative">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">
+        R$
+      </span>
+      <Input
+        ref={inputRef}
+        name={name}
+        inputMode="decimal"
+        placeholder="0,00"
+        className="pl-9"
+        value={display}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+    </div>
+  )
+}
+
 export function DealForm({ defaultValues, leads, onSubmit, onCancel }: DealFormProps) {
   const form = useForm<DealFormData>({
     resolver: zodResolver(dealSchema),
@@ -78,15 +135,11 @@ export function DealForm({ defaultValues, leads, onSubmit, onCancel }: DealFormP
             name="value"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Valor (R$)</FormLabel>
+                <FormLabel>Valor</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    min="0"
-                    step="any"
-                    placeholder="0"
-                    value={field.value ?? ""}
-                    onChange={(e) => field.onChange(e.target.value === "" ? null : Number(e.target.value))}
+                  <CurrencyInput
+                    value={field.value ?? null}
+                    onChange={field.onChange}
                     onBlur={field.onBlur}
                     name={field.name}
                     ref={field.ref}

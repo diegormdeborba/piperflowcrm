@@ -15,7 +15,7 @@ export async function getActiveWorkspace() {
 
   const { data: memberships } = await supabase
     .from("workspace_members")
-    .select("role, workspaces(id, name, plan)")
+    .select("role, workspaces(id, name, plan, stripe_customer_id)")
     .eq("user_id", user.id)
 
   if (!memberships || memberships.length === 0) redirect("/onboarding")
@@ -39,7 +39,7 @@ export async function getActiveWorkspace() {
 
   return {
     user,
-    workspace: ws as { id: string; name: string; plan: "free" | "pro" },
+    workspace: ws as { id: string; name: string; plan: "free" | "pro"; stripe_customer_id: string | null },
     role: activeMembership.role as "admin" | "member",
     supabase,
   }

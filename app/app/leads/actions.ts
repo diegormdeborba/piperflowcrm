@@ -3,11 +3,15 @@
 import { revalidatePath } from "next/cache"
 
 import { getActiveWorkspace } from "@/lib/workspace"
+import { canAddLead } from "@/lib/limits"
 import type { LeadFormData } from "@/components/leads/lead-form"
 import type { ActivityType } from "@/types"
 
 export async function createLead(data: LeadFormData): Promise<{ error?: string }> {
   const { user, workspace, supabase } = await getActiveWorkspace()
+
+  const limit = await canAddLead(workspace.id, workspace.plan, supabase)
+  if (!limit.allowed) return { error: limit.error }
 
   const { error } = await supabase.from("leads").insert({
     workspace_id: workspace.id,
