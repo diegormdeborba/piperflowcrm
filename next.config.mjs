@@ -1,9 +1,14 @@
 /** @type {import('next').NextConfig} */
 
+const isProd = process.env.NODE_ENV === "production"
+
 const csp = [
   "default-src 'self'",
-  // Next.js dev + Stripe.js
-  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com",
+  // 'unsafe-eval' removido em produção — Next.js prod build não precisa
+  // Stripe.js e Next.js funcionam sem ele
+  isProd
+    ? "script-src 'self' 'unsafe-inline' https://js.stripe.com"
+    : "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self'",
@@ -18,8 +23,10 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-DNS-Prefetch-Control", value: "on" },
   { key: "Referrer-Policy",        value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy",     value: "camera=(), microphone=(), geolocation=()" },
+  { key: "Permissions-Policy",     value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
   { key: "Content-Security-Policy", value: csp },
+  // HSTS: força HTTPS por 2 anos em produção
+  ...(isProd ? [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }] : []),
 ]
 
 const nextConfig = {
