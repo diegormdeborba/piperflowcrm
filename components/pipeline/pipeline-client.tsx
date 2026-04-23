@@ -76,6 +76,7 @@ export function PipelineClient({ initialDeals, leads, owners }: PipelineClientPr
     } else {
       const result = await createDeal(data)
       if (result?.error) { toast.error(result.error); return }
+      if (result.deal) setDeals((prev) => [result.deal!, ...prev])
       toast.success("Negócio criado!")
     }
     setSheetOpen(false)

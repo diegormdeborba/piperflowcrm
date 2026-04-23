@@ -1,8 +1,11 @@
 "use server"
 
+import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
+
+const ACTIVE_WORKSPACE_COOKIE = "piperflow_active_workspace"
 
 function slugify(name: string): string {
   return name
@@ -79,7 +82,11 @@ export async function joinWorkspaceByInvite(token: string) {
     return { error: "Este convite expirou. Solicite um novo." }
   }
 
-  const { error: memberError } = await supabase.from("workspace_members").insert({
+  // Usa admin client para bypassar RLS — o convidado ainda não é membro
+  // e a policy insert_workspace_members exige is_workspace_admin()
+  const admin = createAdminClient()
+
+  const { error: memberError } = await admin.from("workspace_members").insert({
     workspace_id: invite.workspace_id,
     user_id: user.id,
     role: invite.role,
@@ -89,10 +96,20 @@ export async function joinWorkspaceByInvite(token: string) {
     return { error: "Erro ao entrar no workspace. Você já pode ser membro." }
   }
 
-  await supabase
+  // Admin client também necessário: policy admins_manage_invites exige is_workspace_admin para UPDATE
+  await admin
     .from("invites")
     .update({ accepted_at: new Date().toISOString() })
     .eq("id", invite.id)
+
+  // Ativa o workspace do convite para o novo membro não cair no workspace errado
+  const cookieStore = await cookies()
+  cookieStore.set(ACTIVE_WORKSPACE_COOKIE, invite.workspace_id, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+  })
 
   redirect("/app/dashboard")
 }

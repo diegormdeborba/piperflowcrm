@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /app/
+Disallow: /onboarding/
+Disallow: /invite/
+Disallow: /api/
+
+Sitemap: https://piperflowcrm.vercel.app/sitemap.xml

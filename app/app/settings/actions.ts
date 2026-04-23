@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { sendInviteEmail } from "@/lib/resend"
+import { rateLimit } from "@/lib/rate-limit"
+import { canAddMember } from "@/lib/limits"
 
 const ACTIVE_WORKSPACE_COOKIE = "piperflow_active_workspace"
 
@@ -77,12 +79,12 @@ export async function inviteMember(workspaceId: string, email: string, role: "ad
   const result = await assertAdmin(workspaceId)
   if ("error" in result) return result
 
-  const { supabase } = result
+  // 5 convites por usuário por hora
+  if (!rateLimit(`invite:${result.user.id}`, 5, 60 * 60 * 1000)) {
+    return { error: "Muitas tentativas. Tente novamente em 1 hora." }
+  }
 
-  const { count } = await supabase
-    .from("workspace_members")
-    .select("*", { count: "exact", head: true })
-    .eq("workspace_id", workspaceId)
+  const { supabase } = result
 
   const { data: workspace } = await supabase
     .from("workspaces")
@@ -92,9 +94,8 @@ export async function inviteMember(workspaceId: string, email: string, role: "ad
 
   if (!workspace) return { error: "Workspace não encontrado." }
 
-  if (workspace.plan === "free" && (count ?? 0) >= 2) {
-    return { error: "Limite de 2 membros atingido no plano Free. Faça upgrade para Pro." }
-  }
+  const limit = await canAddMember(workspaceId, workspace.plan, supabase)
+  if (!limit.allowed) return { error: limit.error }
 
   const { data: existing } = await supabase
     .from("invites")
@@ -115,7 +116,7 @@ export async function inviteMember(workspaceId: string, email: string, role: "ad
       email: email.toLowerCase(),
       role,
     })
-    .select("token")
+    .select("id, token")
     .single()
 
   if (inviteError || !invite) return { error: "Erro ao criar convite." }
@@ -123,7 +124,12 @@ export async function inviteMember(workspaceId: string, email: string, role: "ad
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
   const inviteUrl = `${appUrl}/invite/${invite.token}`
 
-  await sendInviteEmail({ to: email, workspaceName: workspace.name, inviteUrl })
+  const emailResult = await sendInviteEmail({ to: email, workspaceName: workspace.name, inviteUrl })
+  if (emailResult.error) {
+    // Convite criado mas email falhou — remove o convite e retorna erro legível
+    await admin.from("invites").delete().eq("id", invite.id)
+    return { error: `Convite criado, mas o e-mail não pôde ser enviado: ${emailResult.error}` }
+  }
 
   revalidatePath("/app/settings/members")
   return {}
