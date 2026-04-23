@@ -82,6 +82,13 @@ export async function joinWorkspaceByInvite(token: string) {
     return { error: "Este convite expirou. Solicite um novo." }
   }
 
+  // Garante que o usuário logado é o destinatário do convite
+  if (user.email?.toLowerCase() !== invite.email.toLowerCase()) {
+    return {
+      error: `Este convite foi enviado para ${invite.email}. Faça login com essa conta para aceitar.`,
+    }
+  }
+
   // Usa admin client para bypassar RLS — o convidado ainda não é membro
   // e a policy insert_workspace_members exige is_workspace_admin()
   const admin = createAdminClient()
@@ -106,6 +113,7 @@ export async function joinWorkspaceByInvite(token: string) {
   const cookieStore = await cookies()
   cookieStore.set(ACTIVE_WORKSPACE_COOKIE, invite.workspace_id, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 365,
