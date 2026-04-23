@@ -35,7 +35,7 @@ export function LeadsClient({
   const [sheetOpen, setSheetOpen] = useState(false)
   const [editingLead, setEditingLead] = useState<Lead | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Lead | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
 

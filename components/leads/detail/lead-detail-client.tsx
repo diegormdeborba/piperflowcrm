@@ -25,7 +25,7 @@ export function LeadDetailClient({ lead, activities }: LeadDetailClientProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [activityOpen, setActivityOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<Lead | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
   async function handleSave(data: LeadFormData) {
     const result = await updateLead(lead.id, data)

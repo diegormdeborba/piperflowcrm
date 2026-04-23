@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache"
 
-import { createClient } from "@/lib/supabase/server"
 import { getActiveWorkspace } from "@/lib/workspace"
 import type { DealFormData } from "@/components/pipeline/deal-form"
 import type { Deal, DealStage } from "@/types"
